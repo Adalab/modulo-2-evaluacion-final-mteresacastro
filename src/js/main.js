@@ -30,26 +30,51 @@ function handleClickBtnSearch(event) {
       .then(response => response.json())
       .then(function (dataAPI){
           seriesList = dataAPI.filter((serie)=>serie.show.name.toLowerCase().includes(valueInput.toLowerCase()));
-          console.log(seriesList);
           if (seriesList.length === 0) {
-            notFound.innerHTML = '<i class="fa-regular fa-circle-xmark"></i> Lo sentimos. No se ha encontrado ninguna serie con ese nombre. ';
+            notFound.classList.remove('hidden');
+            notFound.innerHTML = '<i class="fa-regular fa-circle-xmark"></i> Lo sentimos. No se ha encontrado ninguna serie con ese nombre.';
           } 
           if (seriesList.length > 0) {
             notFound.classList.add('hidden');
           }
+          console.log(seriesList);
           renderSerieList(seriesList);
       });
 }
 
+/*function handleClickFavourites(event) {
+  event.preventDefault();
+  const clickedElement = event.currentTarget.dataset.idElement;
+  for (const serie of seriesList) {
+    if (JSON.stringify(serie.show.id) === clickedElement) { //para usar igualdad absoluta use JSONstringify() porque son distintos tipos de datos
+      seriesFavourites.push(serie);
+    }
+    event.currentTarget.classList.add('selected');
+  }
+  if (event.currentTarget.classList.contains('selected')) {
+    event.currentTarget.classList.remove('selected');
+  }
+}*/
 function handleClickFavourites(event) {
   event.preventDefault();
   const clickedElement = event.currentTarget.dataset.idElement;
-  findSerie = seriesList.find((serie)=>serie.show.id === clickedElement);
-  seriesFavourites.push(findSerie);
-  //clickedElement.classList.add('selected');
-  console.log(clickedElement);
-}
 
+  for (const serie of seriesList) {
+    if(serie.show.id === parseInt(clickedElement)){ // uso el parseInt para poder usar igualdad absoluta, así igualo todo a tipo int.
+      if(!event.currentTarget.classList.contains('selected')){
+        event.currentTarget.classList.add('selected');
+        seriesFavourites.push(serie);
+      }else{
+        const indexToRemove = seriesFavourites.findIndex(item => item.show.id === serie.show.id);
+        event.currentTarget.classList.remove('selected');
+        if (indexToRemove !== -1) {
+          seriesFavourites.splice(indexToRemove, 1);
+        }
+      }
+      break; //para que pare el bucle si se cumplen los if
+    }
+  }
+}
 //funciones render
 
 function renderSerie(oneSerie) {
@@ -58,8 +83,7 @@ function renderSerie(oneSerie) {
   divElement.setAttribute('class', 'serieBox js-serieBox');
   divElement.dataset.idElement = oneSerie.show.id; //para saber cual es la id de cada serie
   divBox = document.querySelector('.js-serieBox');
-  divElement.addEventListener('click', handleClickFavourites);
-  
+  //divBox.addEventListener('click', handleClickFavourites);
 
   const imgElement = document.createElement('img');
   imgElement.setAttribute('class','serieBox__img js-serieBox__img');
@@ -78,6 +102,8 @@ function renderSerie(oneSerie) {
   titleElement.appendChild(textTitleElement);
   divElement.appendChild(titleElement);
   console.log(oneSerie.show.name);
+
+  divElement.addEventListener('click', handleClickFavourites);
 
   return divElement;
 }
