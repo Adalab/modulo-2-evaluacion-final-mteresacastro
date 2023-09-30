@@ -4,10 +4,11 @@
 
 const inputText = document.querySelector('.js-searchText');
 const btnSearch = document.querySelector('.js-searchBtn');
+const notFound = document.querySelector('.js-notFound');
 
 const principalList = document.querySelector('.js-principalList');
 let divBox = [];
-
+let findSerie = [];
 let seriesList = []; 
 let seriesFavourites= [];
 
@@ -28,16 +29,22 @@ function handleClickBtnSearch(event) {
   fetch(urlAPI)
       .then(response => response.json())
       .then(function (dataAPI){
-          seriesList = dataAPI.filter((serie)=>serie.show.name.toLowerCase().includes(valueInput.toLowerCase())); //mapear esto bien
+          seriesList = dataAPI.filter((serie)=>serie.show.name.toLowerCase().includes(valueInput.toLowerCase()));
+          console.log(seriesList);
+          if (seriesList.length === 0) {
+            notFound.innerHTML = '<i class="fa-regular fa-circle-xmark"></i> Lo sentimos. No se ha encontrado ninguna serie con ese nombre. ';
+          } 
+          if (seriesList.length > 0) {
+            notFound.classList.add('hidden');
+          }
           renderSerieList(seriesList);
-        });
-  
+      });
 }
 
 function handleClickFavourites(event) {
   event.preventDefault();
   const clickedElement = event.currentTarget.dataset.idElement;
-  const findSerie = seriesList.find((serie)=>serie.show.id === clickedElement);
+  findSerie = seriesList.find((serie)=>serie.show.id === clickedElement);
   seriesFavourites.push(findSerie);
   //clickedElement.classList.add('selected');
   console.log(clickedElement);
@@ -92,6 +99,3 @@ function renderFavourite(){
 //eventos
 
 btnSearch.addEventListener('click', handleClickBtnSearch);
-
-
-
