@@ -24,11 +24,7 @@ function renderSerie(oneSerie) {
   const imgElement = document.createElement('img');
   imgElement.setAttribute('class','serieBox__img js-serieBox__img');
   imgElement.setAttribute('alt', oneSerie.show.name);
-  if (oneSerie.show.image === null) {
-    imgElement.setAttribute('src', 'https://via.placeholder.com/210x295/ffffff/666666/?text=TV');
-  } else{
-    imgElement.setAttribute('src', oneSerie.show.image.medium);
-  }
+  imageSrc(oneSerie, imgElement);
   divElement.appendChild(imgElement);
 
   const titleElement = document.createElement('p');
@@ -61,12 +57,7 @@ function renderFavouriteSerie(eachSerie) {
   const imgFavElement = document.createElement('img');
   imgFavElement.setAttribute('class','serieFavouriteBox__img js-serieFavouriteBox__img');
   imgFavElement.setAttribute('alt', eachSerie.show.name);
-  imgFavElement.setAttribute('src', eachSerie.show.image.medium);
-  if (eachSerie.show.image === null) {
-    imgFavElement.setAttribute('src', 'https://via.placeholder.com/210x295/ffffff/666666/?text=TV');
-  } else {
-    imgFavElement.setAttribute('src', eachSerie.show.image.medium);
-  }
+  imageSrc (eachSerie, imgFavElement);
   liElement.appendChild(imgFavElement);
 
   const titleFavElement = document.createElement('p');
@@ -87,6 +78,14 @@ function renderFavouritesSeriesList(seriesFavourites) {
     const FavLi = renderFavouriteSerie(eachSerie);
     // Agrega el elemento div al DOM
     ulFavourites.appendChild(FavLi);
+  }
+}
+
+function imageSrc(eachImage, imgElement) { //creo esta funcion porque hacía lo mismo en dos sitios distintos.
+  if (eachImage.show.image === null) {
+    imgElement.setAttribute('src', 'https://via.placeholder.com/210x295/ffffff/666666/?text=TV');
+  } else {
+    imgElement.setAttribute('src', eachImage.show.image.medium);
   }
 }
 

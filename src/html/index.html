@@ -14,10 +14,10 @@
     <main class="main">
       <h1 class="title">Buscador de series</h1>
       <form action="" class="formSection">
-        <label for="searchSeries">Serie: </label>
-        <input id="searchSeries" type="text" placeholder="Buscar una serie" value="" class="js-searchText"/>
-        <button type="submit" class="js-searchBtn">Search</button>
-        <p class="notFound js-notFound"></p>
+        <label for="searchSeries" class="formSection__searchSeries">Serie: </label>
+        <input id="searchSeries" type="text" placeholder="Buscar una serie" value="" class="js-searchText formSection__input"/>
+        <button type="submit" class="formSection__button js-searchBtn">Buscar</button>
+        <p class="formSection__notFound js-notFound"></p>
       </form>
       <section class="principalList js-principalList">
         <!--<div class="serieBox js-seriebox">
@@ -26,7 +26,7 @@
         </div>-->
       </section>
       <section class="favouriteList">
-        <h3><i class="fa-brands fa-gratipay"></i> Mis series favoritas</h3>
+        <h3 class="favouriteList__title"><i class="fa-brands fa-gratipay"></i> Mis series favoritas</h3>
         <ul class="favouriteList js-favouriteList">
             <!--<li>
               <img src="" alt="">
