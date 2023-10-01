@@ -8,6 +8,7 @@ const notFound = document.querySelector('.js-notFound');
 const ulFavourites = document.querySelector('.js-favouriteList');
 const principalList = document.querySelector('.js-principalList');
 
+
 //datos
 
 let seriesList = [];
@@ -53,13 +54,18 @@ function renderFavouriteSerie(eachSerie) {
 
   const liElement = document.createElement('li');
   liElement.setAttribute('class','serieFavouriteBox js-serieFavouriteBox');
-  // ulFavourites.appendChild(liElement);
 
   const imgFavElement = document.createElement('img');
   imgFavElement.setAttribute('class','serieFavouriteBox__img js-serieFavouriteBox__img');
   imgFavElement.setAttribute('alt', eachSerie.show.name);
   imageSrc (eachSerie, imgFavElement);
   liElement.appendChild(imgFavElement);
+
+  const removeFavElement = document.createElement('i');
+  removeFavElement.setAttribute('class','fa-solid fa-trash removeFav js-removeFav');
+  removeFavElement.setAttribute('data-id', eachSerie.show.id);
+  liElement.appendChild(removeFavElement);
+
 
   const titleFavElement = document.createElement('p');
   titleFavElement.setAttribute('class','serieFavouriteBox__title js-serieFavouriteBox__title');
@@ -75,7 +81,7 @@ function renderFavouriteSerie(eachSerie) {
 function renderFavouritesSeriesList(seriesFavourites) {
   ulFavourites.innerHTML = '';
 
-  storedFavourites = JSON.parse(localStorage.getItem('localStorageFavourites'));
+  storedFavourites = JSON.parse(localStorage.getItem('localStorageFavourites')) || [];
 
   if (storedFavourites === null) {
     seriesFavourites = [];
@@ -113,7 +119,6 @@ function handleClickFavourites(event) {
         event.currentTarget.classList.add('selected');
         seriesFavourites.push(serie);
         storedFavourites.push(serie);
-
       }else{
         event.currentTarget.classList.remove('selected');
         const indexToRemove = seriesFavourites.findIndex(item => item.show.id === serie.show.id);
