@@ -12,6 +12,7 @@ const principalList = document.querySelector('.js-principalList');
 
 let seriesList = [];
 let seriesFavourites = [];
+let storedFavourites = [];
 
 //funciones render
 
@@ -73,12 +74,23 @@ function renderFavouriteSerie(eachSerie) {
 
 function renderFavouritesSeriesList(seriesFavourites) {
   ulFavourites.innerHTML = '';
+
+  storedFavourites = JSON.parse(localStorage.getItem('localStorageFavourites'));
+
+  if (storedFavourites === null) {
+    seriesFavourites = [];
+  } else {
+    seriesFavourites = storedFavourites;
+  }
+
   for (const eachSerie of seriesFavourites) {
     // Llama a renderSerie para obtener el elemento div
     const FavLi = renderFavouriteSerie(eachSerie);
     // Agrega el elemento div al DOM
     ulFavourites.appendChild(FavLi);
   }
+
+  //localStorage.setItem('localStorageFavourites', JSON.stringify(seriesFavourites));
 }
 
 function imageSrc(eachImage, imgElement) { //creo esta funcion porque hacía lo mismo en dos sitios distintos.
@@ -91,6 +103,34 @@ function imageSrc(eachImage, imgElement) { //creo esta funcion porque hacía lo 
 
 //funciones manejadoras de eventos
 
+function handleClickFavourites(event) {
+  event.preventDefault();
+  const clickedElement = event.currentTarget.dataset.idElement;
+
+  for (const serie of seriesList) {
+    if(serie.show.id === parseInt(clickedElement)){ // uso el parseInt para poder usar igualdad absoluta, así igualo todo a tipo int.
+      if(!event.currentTarget.classList.contains('selected')){
+        event.currentTarget.classList.add('selected');
+        seriesFavourites.push(serie);
+        storedFavourites.push(serie);
+
+      }else{
+        event.currentTarget.classList.remove('selected');
+        const indexToRemove = seriesFavourites.findIndex(item => item.show.id === serie.show.id);
+        if (indexToRemove !== -1) { //si es diferente de -1 significa que está.
+          seriesFavourites.splice(indexToRemove, 1);
+          storedFavourites.splice(indexToRemove, 1);
+        }
+      }
+
+      localStorage.setItem('localStorageFavourites', JSON.stringify(storedFavourites));
+
+      renderFavouritesSeriesList(seriesFavourites);
+
+      break; //para que pare el bucle si se cumplen los if
+    }
+  }
+}
 
 function handleClickBtnSearch(event) {
   event.preventDefault();
@@ -108,56 +148,15 @@ function handleClickBtnSearch(event) {
       if (seriesList.length === 0) {
         notFound.classList.remove('hidden');
         notFound.innerHTML = '<i class="fa-regular fa-circle-xmark"></i> Lo sentimos. No se ha encontrado ninguna serie con ese nombre.';
-      } 
-      if (seriesList.length > 0) {
+      } else {
         notFound.classList.add('hidden');
       }
-      console.log(seriesList);
       renderSerieList(seriesList);
     });
-}
-
-function handleClickFavourites(event) {
-  event.preventDefault();
-  const clickedElement = event.currentTarget.dataset.idElement;
-
-  for (const serie of seriesList) {
-    if(serie.show.id === parseInt(clickedElement)){ // uso el parseInt para poder usar igualdad absoluta, así igualo todo a tipo int.
-      if(!event.currentTarget.classList.contains('selected')){
-        event.currentTarget.classList.add('selected');
-        seriesFavourites.push(serie);
-        renderFavouritesSeriesList(seriesFavourites);
-      }else{
-        event.currentTarget.classList.remove('selected');
-        const indexToRemove = seriesFavourites.findIndex(item => item.show.id === serie.show.id);
-        if (indexToRemove !== -1) {
-          seriesFavourites.splice(indexToRemove, 1);
-          renderFavouritesSeriesList(seriesFavourites);
-        }
-      }
-      break; //para que pare el bucle si se cumplen los if
-    }
-  }
 }
 
 //eventos
 
 btnSearch.addEventListener('click', handleClickBtnSearch);
 
-/*function handleClickSerie(clickedSerie) {
-  if (!isInFavourites(clickedSerie)) {
-    clickedSerie.selected = true;
-    seriesFavourites.push(clickedSerie);
-  } else {
-    clickedSerie.selected = false;
-    const indexToRemove = seriesFavourites.findIndex(serie => serie.show.id === clickedSerie.show.id);
-    if (indexToRemove !== -1) {
-      seriesFavourites.splice(indexToRemove, 1);
-    }
-  }
-  renderFavouritesSeriesList(seriesFavourites);
-}
-
-function isInFavourites(serie) {
-  return seriesFavourites.some(favourite => favourite.show.id === serie.show.id);
-}*/
+renderFavouritesSeriesList();
