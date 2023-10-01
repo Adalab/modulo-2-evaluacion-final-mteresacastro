@@ -137,6 +137,33 @@ function handleClickFavourites(event) {
   }
 }
 
+/*function handleClickFavourites(event) {    //INTENTANDO MODIFICAR LA FUNCION
+  event.preventDefault();
+  const clickedElement = event.currentTarget.dataset.idElement;
+
+  for (const serie of seriesList) {
+    if(serie.show.id === parseInt(clickedElement)){
+      const indexToRemove = seriesFavourites.findIndex(item => item.show.id === serie.show.id);
+      if(seriesFavourites.findIndex(item => item.show.id === serie.show.id)){ //uso el parseInt para poder usar igualdad absoluta, así igualo todo a tipo int.
+        event.currentTarget.classList.remove('selected');
+        seriesFavourites.splice(indexToRemove, 1);
+        storedFavourites.splice(indexToRemove, 1);
+        console.log(indexToRemove);
+      }else{
+        event.currentTarget.classList.add('selected');
+        seriesFavourites.push(serie);
+        storedFavourites.push(serie);
+      }
+    }
+
+    localStorage.setItem('localStorageFavourites', JSON.stringify(storedFavourites));
+
+    renderFavouritesSeriesList(seriesFavourites);
+
+    break; //para que pare el bucle si se cumplen los if
+  }
+}*/
+
 function handleClickBtnSearch(event) {
   event.preventDefault();
   const valueInput = inputText.value;
