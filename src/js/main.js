@@ -22,6 +22,11 @@ function renderSerie(oneSerie) { //mirar si esta en el array de favorito y poner
   const divElement = document.createElement('div');
   divElement.setAttribute('class', 'serieBox js-serieBox');
   divElement.dataset.idElement = oneSerie.show.id; //para saber cual es la id de cada serie
+  const isAlreadyInFavourites = seriesFavourites.find(item => item.show.id === oneSerie.show.id);
+
+  if (isAlreadyInFavourites !== undefined) {
+    divElement.classList.add('selected');
+  }
 
   const imgElement = document.createElement('img');
   imgElement.setAttribute('class','serieBox__img js-serieBox__img');
@@ -113,15 +118,15 @@ function imageSrc(eachImage, imgElement) { //creo esta funcion porque hacía lo 
   }
 }
 
-function handleClickFavourites(event) {    //INTENTANDO MODIFICAR LA FUNCION
+function handleClickFavourites(event) {
   event.preventDefault();
   const clickedElement = event.currentTarget.dataset.idElement;
 
   for (const serie of seriesList) {
     if(serie.show.id === parseInt(clickedElement)){
       const indexToRemove = seriesFavourites.findIndex(item => item.show.id === serie.show.id);
-      const indexinFav = seriesFavourites.findIndex(item => item.show.id === parseInt(clickedElement));
-      if(indexinFav !== -1 ){ //uso el parseInt para poder usar igualdad absoluta, así igualo todo a tipo int.
+
+      if(indexToRemove !== -1 ){ //uso el parseInt para poder usar igualdad absoluta, así igualo todo a tipo int.
         event.currentTarget.classList.remove('selected');
         seriesFavourites.splice(indexToRemove, 1);
         //storedFavourites.splice(indexToRemove, 1);
