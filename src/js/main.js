@@ -17,7 +17,7 @@ let storedFavourites = [];
 
 //funciones render
 
-function renderSerie(oneSerie) {
+function renderSerie(oneSerie) { //mirar si esta en el array de favorito y poner clase o no
 
   const divElement = document.createElement('div');
   divElement.setAttribute('class', 'serieBox js-serieBox');
@@ -35,7 +35,7 @@ function renderSerie(oneSerie) {
   titleElement.appendChild(textTitleElement);
   divElement.appendChild(titleElement);
 
-  divElement.addEventListener('click', handleClickFavourites); ///mirar aqui la funcion de gpt
+  divElement.addEventListener('click', handleClickFavourites); ///mirar aqui la funcion
 
   return divElement;
 }
@@ -73,30 +73,36 @@ function renderFavouriteSerie(eachSerie) {
   titleFavElement.appendChild(textTitleFavElement);
   liElement.appendChild(titleFavElement);
 
-  //liElement.addEventListener('click', handleClickRemoveFavourite); ///mirar aqui la funcion de gpt
+  //liElement.addEventListener('click', handleClickRemoveFavourite); ///mirar aqui la funcio
 
   return liElement;
+}
+
+function manageDelete(){
+  const deleteIcon = document.querySelectorAll('.js-removeFav');
+  for (let fav of deleteIcon) {
+    fav.addEventListener('click', handleClickDeleteFav);
+  }
 }
 
 function renderFavouritesSeriesList(seriesFavourites) {
   ulFavourites.innerHTML = '';
 
-  storedFavourites = JSON.parse(localStorage.getItem('localStorageFavourites')) || [];
+  storedFavourites = JSON.parse(localStorage.getItem('localStorageFavourites'));
 
   if (storedFavourites === null) {
     seriesFavourites = [];
   } else {
     seriesFavourites = storedFavourites;
   }
-
+ console.log(seriesFavourites);
   for (const eachSerie of seriesFavourites) {
     // Llama a renderSerie para obtener el elemento div
     const FavLi = renderFavouriteSerie(eachSerie);
     // Agrega el elemento div al DOM
     ulFavourites.appendChild(FavLi);
   }
-
-  //localStorage.setItem('localStorageFavourites', JSON.stringify(seriesFavourites));
+  manageDelete();
 }
 
 function imageSrc(eachImage, imgElement) { //creo esta funcion porque hacía lo mismo en dos sitios distintos.
@@ -107,28 +113,25 @@ function imageSrc(eachImage, imgElement) { //creo esta funcion porque hacía lo 
   }
 }
 
-//funciones manejadoras de eventos
-
-function handleClickFavourites(event) {
+function handleClickFavourites(event) {    //INTENTANDO MODIFICAR LA FUNCION
   event.preventDefault();
   const clickedElement = event.currentTarget.dataset.idElement;
 
   for (const serie of seriesList) {
-    if(serie.show.id === parseInt(clickedElement)){ // uso el parseInt para poder usar igualdad absoluta, así igualo todo a tipo int.
-      if(!event.currentTarget.classList.contains('selected')){
+    if(serie.show.id === parseInt(clickedElement)){
+      const indexToRemove = seriesFavourites.findIndex(item => item.show.id === serie.show.id);
+      const indexinFav = seriesFavourites.findIndex(item => item.show.id === parseInt(clickedElement));
+      if(indexinFav !== -1 ){ //uso el parseInt para poder usar igualdad absoluta, así igualo todo a tipo int.
+        event.currentTarget.classList.remove('selected');
+        seriesFavourites.splice(indexToRemove, 1);
+        //storedFavourites.splice(indexToRemove, 1);
+      }else{
         event.currentTarget.classList.add('selected');
         seriesFavourites.push(serie);
-        storedFavourites.push(serie);
-      }else{
-        event.currentTarget.classList.remove('selected');
-        const indexToRemove = seriesFavourites.findIndex(item => item.show.id === serie.show.id);
-        if (indexToRemove !== -1) { //si es diferente de -1 significa que está.
-          seriesFavourites.splice(indexToRemove, 1);
-          storedFavourites.splice(indexToRemove, 1);
-        }
+        //storedFavourites.push(serie);
       }
 
-      localStorage.setItem('localStorageFavourites', JSON.stringify(storedFavourites));
+      localStorage.setItem('localStorageFavourites', JSON.stringify(seriesFavourites));
 
       renderFavouritesSeriesList(seriesFavourites);
 
@@ -136,33 +139,6 @@ function handleClickFavourites(event) {
     }
   }
 }
-
-/*function handleClickFavourites(event) {    //INTENTANDO MODIFICAR LA FUNCION
-  event.preventDefault();
-  const clickedElement = event.currentTarget.dataset.idElement;
-
-  for (const serie of seriesList) {
-    if(serie.show.id === parseInt(clickedElement)){
-      const indexToRemove = seriesFavourites.findIndex(item => item.show.id === serie.show.id);
-      if(seriesFavourites.findIndex(item => item.show.id === serie.show.id)){ //uso el parseInt para poder usar igualdad absoluta, así igualo todo a tipo int.
-        event.currentTarget.classList.remove('selected');
-        seriesFavourites.splice(indexToRemove, 1);
-        storedFavourites.splice(indexToRemove, 1);
-        console.log(indexToRemove);
-      }else{
-        event.currentTarget.classList.add('selected');
-        seriesFavourites.push(serie);
-        storedFavourites.push(serie);
-      }
-    }
-
-    localStorage.setItem('localStorageFavourites', JSON.stringify(storedFavourites));
-
-    renderFavouritesSeriesList(seriesFavourites);
-
-    break; //para que pare el bucle si se cumplen los if
-  }
-}*/
 
 function handleClickBtnSearch(event) {
   event.preventDefault();
@@ -187,8 +163,20 @@ function handleClickBtnSearch(event) {
     });
 }
 
+function handleClickDeleteFav(event) {
+  console.log(serieClicked);
+  const serieClicked = event.currentTarget.dataset.idElement;
+  //let foundSerie = seriesList.find(item => item.show.id === parseInt(serieClicked));
+  const indexToRemove = seriesFavourites.findIndex(item => item.show.id === parseInt(serieClicked));
+  if (indexToRemove !== -1) { //si es diferente de -1 significa que está.
+    seriesFavourites.splice(indexToRemove, 1);
+    storedFavourites.splice(indexToRemove, 1);
+  }
+}
 //eventos
 
 btnSearch.addEventListener('click', handleClickBtnSearch);
+
+
 
 renderFavouritesSeriesList();
