@@ -73,12 +73,19 @@
     background-color: rgb(250, 178, 189);
     border-radius: 2rem;
     list-style: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     &__title{
         font-size: 2rem;
         padding-top: 2rem;
-        padding-bottom: 2rem;
-        text-align: center;
-        
+        padding-bottom: 2rem;  
+    }
+    &__deleteAll{
+        font-size: 2rem;
+        padding: 0.6rem;
+        border-radius: 1.5rem;
+        margin:2rem;
     }
     .serieFavouriteBox{
         border-radius: 2rem;

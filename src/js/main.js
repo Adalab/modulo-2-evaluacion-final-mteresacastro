@@ -7,6 +7,7 @@ const btnSearch = document.querySelector('.js-searchBtn');
 const notFound = document.querySelector('.js-notFound');
 const ulFavourites = document.querySelector('.js-favouriteList');
 const principalList = document.querySelector('.js-principalList');
+const btnDeleteAll = document.querySelector('.js-deleteAll');
 
 
 //datos
@@ -100,7 +101,7 @@ function renderFavouritesSeriesList(seriesFavourites) {
   } else {
     seriesFavourites = storedFavourites;
   }
- console.log(seriesFavourites);
+
   for (const eachSerie of seriesFavourites) {
     // Llama a renderSerie para obtener el elemento div
     const FavLi = renderFavouriteSerie(eachSerie);
@@ -108,7 +109,14 @@ function renderFavouritesSeriesList(seriesFavourites) {
     ulFavourites.appendChild(FavLi);
   }
   manageDelete();
+
+  if (seriesFavourites.length > 0) {
+    btnDeleteAll.classList.remove('hidden');
+  } else {
+    btnDeleteAll.classList.add('hidden');
+  }
 }
+
 
 function imageSrc(eachImage, imgElement) { //creo esta funcion porque hacía lo mismo en dos sitios distintos.
   if (eachImage.show.image === null) {
@@ -178,9 +186,25 @@ function handleClickDeleteFav(event) {
     storedFavourites.splice(indexToRemove, 1);
   }
 }
+
+function handleClickBtnDeleteAll(event) {
+  event.preventDefault();
+
+  const divFavourite = document.querySelectorAll('.js-serieBox');
+  divFavourite.forEach((div) => { // el método forEach nos permite recorrer todos los elementos del DOM y ejecutar lo que añadas dentro, en este caso quitar una clase.
+    div.classList.remove('selected')});
+  seriesFavourites = [];
+  storedFavourites = [];
+  localStorage.removeItem('localStorageFavourites');
+
+  renderFavouritesSeriesList(seriesFavourites);
+}
+
+
 //eventos
 
 btnSearch.addEventListener('click', handleClickBtnSearch);
+btnDeleteAll.addEventListener('click', handleClickBtnDeleteAll);
 
 
 
