@@ -24,7 +24,6 @@ function renderSerie(oneSerie) { //mirar si esta en el array de favorito y poner
   divElement.setAttribute('class', 'serieBox js-serieBox');
   divElement.dataset.idElement = oneSerie.show.id; //para saber cual es la id de cada serie
   const isAlreadyInFavourites = seriesFavourites.find(item => item.show.id === oneSerie.show.id);
- console.log(seriesFavourites);
   if (isAlreadyInFavourites !== undefined) {
     divElement.classList.add('selected');
   }
@@ -179,7 +178,6 @@ function handleClickBtnSearch(event) {
 }
 
 function handleClickDeleteFav(event) {
-  console.log(serieClicked);
   const serieClicked = event.currentTarget.dataset.idElement;
   //let foundSerie = seriesList.find(item => item.show.id === parseInt(serieClicked));
   const indexToRemove = seriesFavourites.findIndex(item => item.show.id === parseInt(serieClicked));
