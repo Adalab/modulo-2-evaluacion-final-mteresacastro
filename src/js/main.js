@@ -40,6 +40,17 @@ function renderSerie(oneSerie) { //mirar si esta en el array de favorito y poner
   titleElement.appendChild(textTitleElement);
   divElement.appendChild(titleElement);
 
+  const titleElement2 = document.createElement('p');
+  titleElement2.setAttribute('class','serieBox__title2 js-serieBox__title2');
+  /*for (const genre of oneSerie.show.genres) {
+    console.log(genre);
+  }*/
+  const textTitleElement2Value = oneSerie.show.genres;
+  const textTitleElement2 = document.createTextNode(textTitleElement2Value);
+  titleElement2.appendChild(textTitleElement2);
+  divElement.appendChild(titleElement2);
+  console.log(textTitleElement2Value);
+
   divElement.addEventListener('click', handleClickFavourites); ///mirar aqui la funcion
 
   return divElement;
@@ -58,7 +69,8 @@ function renderSerieList(seriesList) {
 function renderFavouriteSerie(eachSerie) {
 
   const liElement = document.createElement('li');
-  liElement.setAttribute('class','serieFavouriteBox js-serieFavouriteBox');
+  liElement.setAttribute('class','serieFavouriteBox js-serieFavouriteBox js-removeFav');
+  liElement.setAttribute('data-id', eachSerie.show.id);
 
   const imgFavElement = document.createElement('img');
   imgFavElement.setAttribute('class','serieFavouriteBox__img js-serieFavouriteBox__img');
@@ -85,8 +97,20 @@ function renderFavouriteSerie(eachSerie) {
 
 function manageDelete(){
   const deleteIcon = document.querySelectorAll('.js-removeFav');
-  for (let fav of deleteIcon) {
-    fav.addEventListener('click', handleClickDeleteFav);
+  for (let icon of deleteIcon) {
+    icon.addEventListener('click', handleClickDeleteFav);
+    console.log(icon);
+  }
+}
+
+function handleClickDeleteFav(event) {
+  const serieClicked = event.currentTarget.dataset.idElement;
+  console.log(event.Target);
+  //let foundSerie = seriesList.find(item => item.show.id === parseInt(serieClicked));
+  const indexToRemove = seriesFavourites.findIndex(item => item.show.id === parseInt(serieClicked));
+  if (indexToRemove !== -1) { //si es diferente de -1 significa que está.
+    seriesFavourites.splice(indexToRemove, 1);
+    //storedFavourites.splice(indexToRemove, 1);
   }
 }
 
@@ -94,7 +118,8 @@ function renderFavouritesSeriesList() {
   ulFavourites.innerHTML = '';
 
   storedFavourites = JSON.parse(localStorage.getItem('localStorageFavourites'));
-  console.log(storedFavourites);
+
+  manageDelete();
 
   if (storedFavourites === null) {
     seriesFavourites = [];
@@ -109,7 +134,6 @@ function renderFavouritesSeriesList() {
     // Agrega el elemento div al DOM
     ulFavourites.appendChild(FavLi);
   }
-  manageDelete();
 
   if (seriesFavourites.length > 0) {
     btnDeleteAll.classList.remove('hidden');
@@ -133,9 +157,11 @@ function handleClickFavourites(event) {
 
   for (const serie of seriesList) {
     if(serie.show.id === parseInt(clickedElement)){
-      const indexToRemove = seriesFavourites.findIndex(item => item.show.id === serie.show.id);
-
-      if(indexToRemove !== -1 ){ //uso el parseInt para poder usar igualdad absoluta, así igualo todo a tipo int.
+      //const indexToShowName = seriesFavourites.findIndex(item => item.show.name === serie.show.name);
+      const showNameValue = serie.show.name;
+      console.log(showNameValue);
+    }
+      /*if(indexToRemove !== -1 ){ //uso el parseInt para poder usar igualdad absoluta, así igualo todo a tipo int.
         event.currentTarget.classList.remove('selected');
         seriesFavourites.splice(indexToRemove, 1);
         //storedFavourites.splice(indexToRemove, 1);
@@ -151,6 +177,7 @@ function handleClickFavourites(event) {
 
       break; //para que pare el bucle si se cumplen los if
     }
+  }*/
   }
 }
 
@@ -175,16 +202,6 @@ function handleClickBtnSearch(event) {
       }
       renderSerieList(seriesList);
     });
-}
-
-function handleClickDeleteFav(event) {
-  const serieClicked = event.currentTarget.dataset.idElement;
-  //let foundSerie = seriesList.find(item => item.show.id === parseInt(serieClicked));
-  const indexToRemove = seriesFavourites.findIndex(item => item.show.id === parseInt(serieClicked));
-  if (indexToRemove !== -1) { //si es diferente de -1 significa que está.
-    seriesFavourites.splice(indexToRemove, 1);
-    storedFavourites.splice(indexToRemove, 1);
-  }
 }
 
 function handleClickBtnDeleteAll(event) {
